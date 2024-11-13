@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Logger</title>
+</head>
+<body>
+    <h1>Welcome to the IP Logger</h1>
+    <p>Your IP address will be logged and sent to a Discord webhook.</p>
+
+    <script>
+        // Call your Vercel API when the page loads
+        fetch('https://<your-vercel-deployment-url>/log-ip', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('IP logged:', data);
+        })
+        .catch(error => {
+            console.error('Error logging IP:', error);
+        });
+    </script>
+</body>
+</html>
